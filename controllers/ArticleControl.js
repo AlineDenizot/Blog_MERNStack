@@ -1,49 +1,39 @@
 const ArticleModel = require('../models/ArticleModel');
 
 module.exports = {
-    create: (req, res) => {
-        let article = new ArticleModel(req.body)
-        article
-        .save()
-        .then((result) => {
-            res.json({ success:true, result:result})
-        })
-        .catch(err => {
-            res.json({ success: false, result: err})
-           });
-    },
-    read : (req, res) => {
-        ArticleModel.find()
-        .then((result) => {
-            if (!result) res.json({ success: false, result: "No articles found"})
+    create: async (req, res, next) => {
+        try {
+            const article = new ArticleModel(req.body)
+            const result = await article.save()
+            res.json({ success:true, result: result})
+        } catch (error) {
+            next(error)
+        }
+    }, 
+    read : async (req, res, next) => {
+        try {
+            const article = await ArticleModel.find()
+            res.json({ success:true, result: article})
 
-            res.json({ success:true, result:result})
-        })
-        .catch(err => {
-            res.json({ success: false, result: err})
-           })
+        } catch (error) {
+            next(error)
+        }
     },
-    update: (req, res) => {
-        ArticleModel.updateOne({_id: req.body._id}, req.body)
-        .then((result) => {
-            if (!result) res.json({ success: false, result: "No articles found"})
-            
-            res.json({ success:true, result:result})
-        })
-        .catch(err => {
-            res.json({ success: false, result: err})
-           });
+    update: async (req, res, next) => {
+        try {
+            const article = await ArticleModel.updateOne({_id: req.body._id}, req.body)
+            res.json({ success:true, result: article})
+        } catch (error) {
+            next(error)
+        }        
     },
-    delete : (req, res) => {
-        ArticleModel.deleteOne({_id: req.body._id})
-        .then((result) => {
-            if (!result) res.json({ success: false, result: "No articles found"})
-            
-            res.json({ success:true, result:result})
-        })
-        .catch(err => {
-            res.json({ success: false, result: err})
-           });
+    delete : async (req, res, next) => {
+        try {
+            const article = await ArticleModel.deleteOne({_id: req.body._id})
+            res.json({ success:true, result: article})
+        } catch (error) {
+            next(error)
+        }      
     }
     
 }
