@@ -6,6 +6,8 @@ const mongoose = require('mongoose');
 
 const ArticleController = require('./controllers/ArticleControl')
 
+const asyncHandler = require('express-async-handler')
+
   //Middleware
 app.use(express.urlencoded({ extended: true}))
 app.use(express.json())
@@ -28,10 +30,15 @@ app.get('/', (req, res) => {
 
   //Higher-Order Function to catch errors
 function asyncErrorWrapper (callback) {
-  return function callAsync (req, res, next) {
+  return function (req, res, next) {
     callback(req, res, next).catch(next)
   }
 }
+
+  //404 Error
+app.use(function(req, res, next) {
+  res.status(404).send('Sorry cant find that!');
+});
 
   //Routes
 app.post('/api/article/create', asyncErrorWrapper(ArticleController.create))
