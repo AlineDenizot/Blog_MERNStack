@@ -1,0 +1,10 @@
+# http
+PUT http://localhost:4000/api/article/update HTTP/1.1
+content-type: application/json
+
+{
+    "_id": "607a0713879e1c53f5ed349c",
+    "title": "update TESSSST",
+    "description": "update 33",
+    "author": "Anonymous Update"
+}
