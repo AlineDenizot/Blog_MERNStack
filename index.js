@@ -21,17 +21,25 @@ mongoose
 .then(() => console.log("Connected to database"))
 .catch(err => console.log(err))
 
+
 app.get('/', (req, res) => {
     res.send('Hello World!');
 })
 
-//Routes
-app.post('/api/article/create', ArticleController.create)
-app.get('/api/article/read', ArticleController.read)
-app.put('/api/article/update', ArticleController.update)
-app.delete('/api/article/delete', ArticleController.delete)
+  //Higher-Order Function to catch errors
+function asyncErrorWrapper (callback) {
+  return function callAsync (req, res, next) {
+    callback(req, res, next).catch(next)
+  }
+}
 
-//Start server
+  //Routes
+app.post('/api/article/create', asyncErrorWrapper(ArticleController.create))
+app.get('/api/article/read', asyncErrorWrapper(ArticleController.read))
+app.put('/api/article/update', asyncErrorWrapper(ArticleController.update))
+app.delete('/api/article/delete', asyncErrorWrapper(ArticleController.delete))
+
+  //Start server
 app.listen(port, () => {
   console.log(`Server start at http://localhost:${port}`)
 })
